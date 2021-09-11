@@ -1,6 +1,5 @@
 using PyCall
 using Conda
-using JSON
 
 function inititalize_optimizer(individual_size, configuration)
     scriptdir = @__DIR__
