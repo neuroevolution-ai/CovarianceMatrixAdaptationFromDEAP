@@ -9,6 +9,7 @@ class OptimizerCmaEsDeap():
     def __init__(self, individual_size: int, configuration: dict):
 
         self.individual_size = individual_size
+        self.population_size = configuration["population_size"]
 
         creator.create("FitnessMax", base.Fitness, weights=(1.0,))
         creator.create("Individual", list, typecode='b', fitness=creator.FitnessMax)
@@ -28,7 +29,7 @@ class OptimizerCmaEsDeap():
         for individual in self.population:
             genomes.append(np.array(individual))
 
-        return genomes, self.strategy.weights, self.strategy.mu
+        return genomes, self.strategy.weights, self.strategy.mu, self.population_size, self.individual_size
 
     def tell(self, rewards):
         for ind, fit in zip(self.population, rewards):

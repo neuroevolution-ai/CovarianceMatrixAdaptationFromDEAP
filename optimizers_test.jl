@@ -1,14 +1,14 @@
 using Test
 
-include("optimizers/optimizer.jl")
+include("optimizers/cma_es_deap.jl")
 
-number_generations = 100
-population_size = 50
+number_generations = 200
+population_size = 100
 sigma = 1.0
-free_parameters = 100
+free_parameters = 200
 
 
-function main()
+@testset "Optimizers" begin
     optimizer_configuration = Dict("sigma" => sigma, "population_size" => population_size)
     optimizer = inititalize_optimizer(free_parameters, optimizer_configuration)
 
@@ -18,16 +18,13 @@ function main()
         rewards_training = rand(population_size)
         centroid, ps, BD = tell(optimizer, rewards_training)
 
-        p = sortperm(rewards_training)
-        genomes_part = genomes[p][1:mu]
+        genomes_sorted = genomes[sortperm(rewards_training, rev=true),:]
 
-        centroid2 = weights * genomes_part
+        centroid2 = genomes_sorted[1:mu,:]' * weights
 
-        @test 1 == 1
+        @test centroid ≈ centroid2 atol=0.00001
 
     end
 end
-
-main()
 
 println("Finished")
