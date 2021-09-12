@@ -39,4 +39,4 @@ class OptimizerCmaEsDeap():
 
         print("test1")
 
-        return self.strategy.ps, self.strategy.BD
+        return self.strategy.centroid, self.strategy.ps, self.strategy.BD

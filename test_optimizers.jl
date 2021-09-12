@@ -14,10 +14,9 @@ function main()
         ask(optimizer)
 
         rewards_training = rand(population_size)
-        ps, BD = tell(optimizer, rewards_training)
+        centroid, ps, BD = tell(optimizer, rewards_training)
 
-        println(size(ps))
-        println(size(BD))
+        println(size(centroid))
 
     end
 end
