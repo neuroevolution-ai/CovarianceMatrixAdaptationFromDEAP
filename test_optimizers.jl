@@ -10,7 +10,7 @@ function main()
     optimizer_configuration = Dict("sigma" => sigma, "population_size" => population_size)
     optimizer = inititalize_optimizer(free_parameters, optimizer_configuration)
 
-    for _ = 1:number_generations
+    for generation = 1:number_generations
         ask(optimizer)
 
         rewards_training = rand(population_size)
