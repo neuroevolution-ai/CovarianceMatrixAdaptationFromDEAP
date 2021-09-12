@@ -13,11 +13,11 @@ class OptimizerCmaEsDeap():
         creator.create("FitnessMax", base.Fitness, weights=(1.0,))
         creator.create("Individual", list, typecode='b', fitness=creator.FitnessMax)
 
-        strategy = cma.Strategy(centroid=[0.0] * individual_size, sigma=configuration["sigma"], lambda_=configuration["population_size"])
+        self.strategy = cma.Strategy(centroid=[0.0] * individual_size, sigma=configuration["sigma"], lambda_=configuration["population_size"])
 
         self.toolbox = base.Toolbox()
-        self.toolbox.register("generate", strategy.generate, creator.Individual)
-        self.toolbox.register("update", strategy.update)
+        self.toolbox.register("generate", self.strategy.generate, creator.Individual)
+        self.toolbox.register("update", self.strategy.update)
 
         self.population = None
 
@@ -36,3 +36,7 @@ class OptimizerCmaEsDeap():
 
         # Update the strategy with the evaluated individuals
         self.toolbox.update(self.population)
+
+        print("test1")
+
+        return self.strategy.ps, self.strategy.BD

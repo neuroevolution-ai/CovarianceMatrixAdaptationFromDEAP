@@ -4,7 +4,7 @@ using Conda
 function inititalize_optimizer(individual_size, configuration)
     scriptdir = @__DIR__
     pushfirst!(PyVector(pyimport("sys")."path"), scriptdir)
-    optimizer = pyimport("cma_es_deap2")
+    optimizer = pyimport("cma_es_deap")
     opt = optimizer.OptimizerCmaEsDeap(individual_size, configuration)
     return opt
 end
