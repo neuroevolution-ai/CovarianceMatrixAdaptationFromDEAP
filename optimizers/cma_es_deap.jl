@@ -22,7 +22,7 @@ function ask(optimizer)
         end
     end
     
-    return genomes
+    return genomes, strategy
 end
 
 function tell(optimizer, rewards)
