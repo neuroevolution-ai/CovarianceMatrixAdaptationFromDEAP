@@ -1,3 +1,5 @@
+using Test
+
 include("optimizers/optimizer.jl")
 
 number_generations = 100
@@ -16,7 +18,9 @@ function main()
         rewards_training = rand(population_size)
         centroid, ps, BD = tell(optimizer, rewards_training)
 
-        println(size(centroid))
+        #println(centroid)
+
+        @test 1 == 1
 
     end
 end
