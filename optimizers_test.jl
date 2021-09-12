@@ -3,9 +3,9 @@ using Test
 include("optimizers/cma_es_deap.jl")
 
 number_generations = 200
-population_size = 100
+population_size = 10
 sigma = 1.0
-free_parameters = 200
+free_parameters = 20
 
 
 @testset "Optimizers" begin
@@ -13,16 +13,25 @@ free_parameters = 200
     optimizer = inititalize_optimizer(free_parameters, optimizer_configuration)
 
     for generation = 1:number_generations
-        genomes, weights, mu = ask(optimizer)
+        genomes = ask(optimizer)
 
         rewards_training = rand(population_size)
-        centroid, ps, BD = tell(optimizer, rewards_training)
+        s = tell(optimizer, rewards_training)
 
         genomes_sorted = genomes[sortperm(rewards_training, rev=true),:]
 
-        centroid2 = genomes_sorted[1:mu,:]' * weights
+        old_centroid = copy(s.centroid)
+        centroid2 = genomes_sorted[1:s.mu,:]' * s.weights
 
-        @test centroid ≈ centroid2 atol=0.00001
+        @test s.centroid ≈ centroid2 atol = 0.00001
+
+        c_diff = centroid2 - old_centroid
+
+        Q1 = s.Q1
+        Q2 = s.Q2
+        Q3 = s.Q3
+
+        # @test ps ≈ ps2 atol = 0.00001
 
     end
 end
