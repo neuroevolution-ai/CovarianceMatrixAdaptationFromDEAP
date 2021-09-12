@@ -13,12 +13,10 @@ function main()
     optimizer = inititalize_optimizer(free_parameters, optimizer_configuration)
 
     for generation = 1:number_generations
-        ask(optimizer)
+        genomes, weights = ask(optimizer)
 
         rewards_training = rand(population_size)
         centroid, ps, BD = tell(optimizer, rewards_training)
-
-        #println(centroid)
 
         @test 1 == 1
 
