@@ -28,7 +28,7 @@ class OptimizerCmaEsDeap():
         for individual in self.population:
             genomes.append(np.array(individual))
 
-        return genomes, self.strategy.weights
+        return genomes, self.strategy.weights, self.strategy.mu
 
     def tell(self, rewards):
         for ind, fit in zip(self.population, rewards):
