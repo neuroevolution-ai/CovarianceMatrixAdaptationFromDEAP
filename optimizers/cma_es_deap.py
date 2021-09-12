@@ -37,6 +37,4 @@ class OptimizerCmaEsDeap():
         # Update the strategy with the evaluated individuals
         self.toolbox.update(self.population)
 
-        print("test1")
-
         return self.strategy.centroid, self.strategy.ps, self.strategy.BD
