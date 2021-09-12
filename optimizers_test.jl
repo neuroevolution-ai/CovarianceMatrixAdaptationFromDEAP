@@ -13,23 +13,24 @@ free_parameters = 20
     optimizer = inititalize_optimizer(free_parameters, optimizer_configuration)
 
     for generation = 1:number_generations
-        genomes = ask(optimizer)
+        genomes, B = ask(optimizer)
 
         rewards_training = rand(population_size)
         s = tell(optimizer, rewards_training)
 
         genomes_sorted = genomes[sortperm(rewards_training, rev=true),:]
 
-        old_centroid = copy(s.centroid)
-        centroid2 = genomes_sorted[1:s.mu,:]' * s.weights
+        centroid = genomes_sorted[1:s.mu,:]' * s.weights
+        @test s.centroid ≈ centroid atol = 0.00001
 
-        @test s.centroid ≈ centroid2 atol = 0.00001
+        c_diff = centroid - s.old_centroid
+        @test s.c_diff ≈ c_diff
 
-        c_diff = centroid2 - old_centroid
+        Q1 = B' * c_diff
+        @test s.Q1 ≈ Q1
 
-        Q1 = s.Q1
-        Q2 = s.Q2
-        Q3 = s.Q3
+        Q2_deap = s.Q2
+        Q3_deap = s.Q3
 
         # @test ps ≈ ps2 atol = 0.00001
 
