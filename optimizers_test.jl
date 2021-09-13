@@ -14,7 +14,7 @@ free_parameters = 1000
     optimizer = inititalize_optimizer(free_parameters, optimizer_configuration)
 
     for generation = 1:number_generations
-        genomes, B, diagD, sigma, ps, old_centroid, update_count = ask(optimizer)
+        genomes, B, diagD, sigma, ps, old_centroid, update_count, pc = ask(optimizer)
 
         rewards_training = rand(population_size)
         s = tell(optimizer, rewards_training)
@@ -36,7 +36,9 @@ free_parameters = 1000
             norm(ps) / sqrt(1.0 - (1 - s.cs)^(2 * (update_count + 1))) / s.chiN <
             (1.4 + 2 / (s.dim + 1)),
         )
-        @test s.hsig == hsig
+
+        pc = (1 - s.cc) * pc + hsig * sqrt(s.cc * (2 - s.cc) * s.mueff) / sigma * c_diff
+        @test s.pc ≈ pc atol = 0.00001
 
     end
 end

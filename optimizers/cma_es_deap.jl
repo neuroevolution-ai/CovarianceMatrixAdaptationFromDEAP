@@ -22,7 +22,14 @@ function ask(optimizer)
         end
     end
 
-    return genomes, strategy.B, strategy.diagD, strategy.sigma, strategy.ps, strategy.centroid, strategy.update_count
+    return genomes,
+    strategy.B,
+    strategy.diagD,
+    strategy.sigma,
+    strategy.ps,
+    strategy.centroid,
+    strategy.update_count,
+    strategy.pc
 end
 
 function tell(optimizer, rewards)
