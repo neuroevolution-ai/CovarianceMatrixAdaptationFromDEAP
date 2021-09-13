@@ -12,15 +12,17 @@ using Parameters
     cs::Any
     ps::Any
     pc::Any
+    centroid::Any
 end
 
-function tell(optimizer, rewards_training, genomes, B, diagD, sigma, old_centroid, update_count)
+function tell(optimizer, rewards_training, genomes, B, diagD, sigma, update_count)
 
     genomes_sorted = genomes[sortperm(rewards_training, rev = true), :]
 
-    centroid = genomes_sorted[1:optimizer.mu, :]' * optimizer.weights
+    old_centroid = copy(optimizer.centroid)
+    optimizer.centroid = genomes_sorted[1:optimizer.mu, :]' * optimizer.weights
 
-    c_diff = centroid - old_centroid
+    c_diff = optimizer.centroid - old_centroid
 
     # Cumulation : update evolution path
     optimizer.ps =
@@ -37,7 +39,5 @@ function tell(optimizer, rewards_training, genomes, B, diagD, sigma, old_centroi
     optimizer.pc =
         (1 - optimizer.cc) * optimizer.pc +
         hsig * sqrt(optimizer.cc * (2 - optimizer.cc) * optimizer.mueff) / sigma * c_diff
-
-    return centroid, optimizer.ps, optimizer.pc
 
 end

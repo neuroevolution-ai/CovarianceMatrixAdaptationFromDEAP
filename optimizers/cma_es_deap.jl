@@ -16,7 +16,8 @@ function inititalize_optimizer(individual_size, configuration)
     opt.strategy.cc,
     opt.strategy.cs,
     opt.strategy.ps,
-    opt.strategy.pc
+    opt.strategy.pc,
+    opt.strategy.centroid
 end
 
 function ask(optimizer)
@@ -36,7 +37,6 @@ function ask(optimizer)
     strategy.B,
     strategy.diagD,
     strategy.sigma,
-    strategy.centroid,
     strategy.update_count
 end
 
