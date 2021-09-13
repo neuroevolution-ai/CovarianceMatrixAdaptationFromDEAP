@@ -13,7 +13,7 @@ free_parameters = 1000
     optimizer = inititalize_optimizer(free_parameters, optimizer_configuration)
 
     for generation = 1:number_generations
-        genomes, B, diagD, sigma, ps = ask(optimizer)
+        genomes, B, diagD, sigma, ps, old_centroid = ask(optimizer)
 
         rewards_training = rand(population_size)
         s = tell(optimizer, rewards_training)
@@ -23,17 +23,7 @@ free_parameters = 1000
         centroid = genomes_sorted[1:s.mu, :]' * s.weights
         @test s.centroid ≈ centroid atol = 0.00001
 
-        c_diff = centroid - s.old_centroid
-        @test s.c_diff ≈ c_diff atol = 0.00001
-
-        Q1 = B' * c_diff
-        @test s.Q1 ≈ Q1 atol = 0.00001
-
-        Q2 = (1 ./ diagD) .* B' * c_diff
-        @test s.Q2 ≈ Q2 atol = 0.00001
-
-        Q3 = B * ((1 ./ diagD) .* B' * c_diff)
-        @test s.Q3 ≈ Q3 atol = 0.00001
+        c_diff = centroid - old_centroid
 
         # Cumulation : update evolution path
         ps =
