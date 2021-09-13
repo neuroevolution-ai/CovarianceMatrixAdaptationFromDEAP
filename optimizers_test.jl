@@ -38,7 +38,7 @@ free_parameters = 1000
     for generation = 1:number_generations
 
         # Ask optimizer for new population
-        genomes1, B1, diagD1, sigma1 = ask(optimizer1)
+        genomes1, B1, diagD1 = ask(optimizer1)
 
         # Generate random rewards
         rewards_training = rand(population_size)

@@ -65,7 +65,7 @@ function ask(optimizer)
         end
     end
 
-    return genomes, strategy.B, strategy.diagD, strategy.sigma
+    return genomes, strategy.B, strategy.diagD
 end
 
 function tell(optimizer, rewards)
