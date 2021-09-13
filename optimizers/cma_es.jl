@@ -61,6 +61,7 @@ function tell(optimizer::OptimizerCmaEs, rewards_training, genomes, B, diagD)
         optimizer.ccov1 * optimizer.pc * optimizer.pc' +
         optimizer.ccovmu * (optimizer.weights' .* artmp) * artmp' / optimizer.sigma^2
 
-    optimizer.sigma *= exp((norm(optimizer.ps) / optimizer.chiN - 1) * optimizer.cs / optimizer.damps)
+    optimizer.sigma *=
+        exp((norm(optimizer.ps) / optimizer.chiN - 1) * optimizer.cs / optimizer.damps)
 
 end
