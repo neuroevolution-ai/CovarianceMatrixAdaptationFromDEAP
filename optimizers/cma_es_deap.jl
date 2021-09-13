@@ -46,12 +46,5 @@ function tell(optimizer, rewards)
 
     return strategy.centroid,
     strategy.ps,
-    strategy.pc,
-    strategy.mu,
-    strategy.weights,
-    strategy.cs,
-    strategy.mueff,
-    strategy.chiN,
-    strategy.dim,
-    strategy.cc
+    strategy.pc
 end
