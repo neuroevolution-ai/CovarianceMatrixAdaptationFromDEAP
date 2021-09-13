@@ -14,7 +14,7 @@ free_parameters = 1000
 
     # Initialize Optimizers
     # Optimizer1: CMA-ES optimizer of the Python deap package using PyCall
-    # Optimizer2: CMA-ES optimizer implemented in Julia
+    # Optimizer2: Identical CMA-ES optimizer implemented in Julia
     optimizer1 = inititalize_optimizer(free_parameters, optimizer_configuration)
     optimizer2 = OptimizerCmaEs(
         dim = optimizer1.dim,
