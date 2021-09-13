@@ -39,6 +39,7 @@ free_parameters = 1000
         tell(optimizer1, rewards_training)
         tell(optimizer2, rewards_training, genomes1, B1, diagD1, sigma1, update_count1)
 
+        # Compare internal states of both optimizers
         @test optimizer1.centroid ≈ optimizer2.centroid atol = 0.00001
         @test optimizer1.ps ≈ optimizer2.ps atol = 0.00001
         @test optimizer1.pc ≈ optimizer2.pc atol = 0.00001
