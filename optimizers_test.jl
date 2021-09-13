@@ -3,7 +3,7 @@ using Test
 include("optimizers/cma_es_deap.jl")
 
 number_generations = 100
-population_size = 500
+population_size = 200
 sigma = 1.5
 free_parameters = 1000
 
