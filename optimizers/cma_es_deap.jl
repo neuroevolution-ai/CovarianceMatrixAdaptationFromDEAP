@@ -6,7 +6,15 @@ function inititalize_optimizer(individual_size, configuration)
     pushfirst!(PyVector(pyimport("sys")."path"), scriptdir)
     optimizer = pyimport("cma_es_deap")
     opt = optimizer.OptimizerCmaEsDeap(individual_size, configuration)
-    return opt
+
+    return opt,
+    opt.strategy.dim,
+    opt.strategy.chiN,
+    opt.strategy.mu,
+    opt.strategy.weights,
+    opt.strategy.mueff,
+    opt.strategy.cc,
+    opt.strategy.cs
 end
 
 function ask(optimizer)

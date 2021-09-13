@@ -13,7 +13,16 @@ free_parameters = 1000
     optimizer_configuration = Dict("sigma" => sigma, "population_size" => population_size)
 
     # Initialize Optimizers
-    optimizer1 = inititalize_optimizer(free_parameters, optimizer_configuration)
+    optimizer1, dim1, chiN1, mu1, weights1, mueff1, cc1, cs1 = inititalize_optimizer(free_parameters, optimizer_configuration)
+    optimizer2 = OptimizerCmaEs(
+        dim = dim1,
+        chiN = chiN1,
+        mu = mu1,
+        weights = weights1,
+        mueff = mueff1,
+        cc = cc1,
+        cs = cs1,
+    )
 
     for generation = 1:number_generations
 
@@ -24,11 +33,7 @@ free_parameters = 1000
         rewards_training = rand(population_size)
 
         # Tell optimizer new rewards
-        centroid1, ps1_, pc1_, mu1, weights1, cs1, mueff1, chiN1, dim1, cc1 = tell(optimizer1, rewards_training)
-
-        # Initialize OptimizerCmaEs        
-        optimizer2 = OptimizerCmaEs(dim=dim1, chiN=chiN1, mu=mu1, weights=weights1, mueff=mueff1, cc=cc1, cs=cs1)
-
+        centroid1, ps1_, pc1_ = tell(optimizer1, rewards_training)
         centroid2, ps2, pc2 = tell(optimizer2, rewards_training, genomes1, B1, diagD1, sigma1, ps1, old_centroid1, update_count1, pc1)
 
         @test centroid1 ≈ centroid2 atol = 0.00001
