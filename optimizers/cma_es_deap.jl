@@ -11,7 +11,7 @@ end
 
 function ask(optimizer)
 
-    genomes_list, population_size, individual_size, strategy  = optimizer.ask()
+    genomes_list, population_size, individual_size, strategy = optimizer.ask()
 
     genomes = Matrix(undef, population_size, individual_size)
 
@@ -21,8 +21,8 @@ function ask(optimizer)
             genomes[i, j] = (genomes_list[i])[j]
         end
     end
-    
-    return genomes, strategy.B
+
+    return genomes, strategy.B, strategy.diagD, strategy.sigma, strategy.ps
 end
 
 function tell(optimizer, rewards)
