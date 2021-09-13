@@ -13,9 +13,10 @@ using Parameters
     ps::Any
     pc::Any
     centroid::Any
+    update_count::Any
 end
 
-function tell(optimizer, rewards_training, genomes, B, diagD, sigma, update_count)
+function tell(optimizer, rewards_training, genomes, B, diagD, sigma)
 
     genomes_sorted = genomes[sortperm(rewards_training, rev = true), :]
 
@@ -32,9 +33,11 @@ function tell(optimizer, rewards_training, genomes, B, diagD, sigma, update_coun
         ((1 ./ diagD) .* B' * c_diff)
 
     hsig = float(
-        norm(optimizer.ps) / sqrt(1.0 - (1 - optimizer.cs)^(2 * (update_count + 1))) /
+        norm(optimizer.ps) / sqrt(1.0 - (1 - optimizer.cs)^(2 * (optimizer.update_count + 1))) /
         optimizer.chiN < (1.4 + 2 / (optimizer.dim + 1)),
     )
+
+    optimizer.update_count += 1
 
     optimizer.pc =
         (1 - optimizer.cc) * optimizer.pc +

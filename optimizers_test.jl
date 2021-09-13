@@ -26,24 +26,26 @@ free_parameters = 1000
         cs = optimizer1.cs,
         ps = optimizer1.ps,
         pc = optimizer1.pc,
+        update_count = optimizer1.update_count,
         centroid = optimizer1.centroid,
     )
 
     for generation = 1:number_generations
 
         # Ask optimizer for new population
-        genomes1, B1, diagD1, sigma1, update_count1 = ask(optimizer1)
+        genomes1, B1, diagD1, sigma1 = ask(optimizer1)
 
         # Generate random rewards
         rewards_training = rand(population_size)
 
         # Tell optimizers new rewards
         tell(optimizer1, rewards_training)
-        tell(optimizer2, rewards_training, genomes1, B1, diagD1, sigma1, update_count1)
+        tell(optimizer2, rewards_training, genomes1, B1, diagD1, sigma1)
 
         # Compare internal states of both optimizers
         @test optimizer1.centroid ≈ optimizer2.centroid atol = 0.00001
         @test optimizer1.ps ≈ optimizer2.ps atol = 0.00001
+        @test optimizer1.update_count ≈ optimizer2.update_count atol = 0.00001
         @test optimizer1.pc ≈ optimizer2.pc atol = 0.00001
     end
 end

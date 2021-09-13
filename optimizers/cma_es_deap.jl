@@ -14,6 +14,7 @@ using Parameters
     ps::Any
     pc::Any
     centroid::Any
+    update_count::Any
     opt::Any
 end
 
@@ -34,6 +35,7 @@ function inititalize_optimizer(individual_size, configuration)
         ps = opt.strategy.ps,
         pc = opt.strategy.pc,
         centroid = opt.strategy.centroid,
+        update_count = opt.strategy.update_count,
         opt = opt,
     )
 
@@ -53,7 +55,7 @@ function ask(optimizer)
         end
     end
 
-    return genomes, strategy.B, strategy.diagD, strategy.sigma, strategy.update_count
+    return genomes, strategy.B, strategy.diagD, strategy.sigma
 end
 
 function tell(optimizer, rewards)
@@ -63,4 +65,5 @@ function tell(optimizer, rewards)
     optimizer.centroid = strategy.centroid
     optimizer.ps = strategy.ps
     optimizer.pc = strategy.pc
+    optimizer.update_count = strategy.update_count
 end
