@@ -2,7 +2,7 @@ using LinearAlgebra
 using Parameters
 
 
-@with_kw struct OptimizerCmaEs
+@with_kw mutable struct OptimizerCmaEs
     dim::Any
     chiN::Any
     mu::Any
@@ -10,20 +10,11 @@ using Parameters
     mueff::Any
     cc::Any
     cs::Any
+    ps::Any
+    pc::Any
 end
 
-function tell(
-    optimizer,
-    rewards_training,
-    genomes,
-    B,
-    diagD,
-    sigma,
-    ps,
-    old_centroid,
-    update_count,
-    pc,
-)
+function tell(optimizer, rewards_training, genomes, B, diagD, sigma, old_centroid, update_count)
 
     genomes_sorted = genomes[sortperm(rewards_training, rev = true), :]
 
@@ -32,21 +23,21 @@ function tell(
     c_diff = centroid - old_centroid
 
     # Cumulation : update evolution path
-    ps =
-        (1 - optimizer.cs) .* ps +
+    optimizer.ps =
+        (1 - optimizer.cs) .* optimizer.ps +
         sqrt(optimizer.cs * (2 - optimizer.cs) * optimizer.mueff) ./ sigma *
         B *
         ((1 ./ diagD) .* B' * c_diff)
 
     hsig = float(
-        norm(ps) / sqrt(1.0 - (1 - optimizer.cs)^(2 * (update_count + 1))) /
+        norm(optimizer.ps) / sqrt(1.0 - (1 - optimizer.cs)^(2 * (update_count + 1))) /
         optimizer.chiN < (1.4 + 2 / (optimizer.dim + 1)),
     )
 
-    pc =
-        (1 - optimizer.cc) * pc +
+    optimizer.pc =
+        (1 - optimizer.cc) * optimizer.pc +
         hsig * sqrt(optimizer.cc * (2 - optimizer.cc) * optimizer.mueff) / sigma * c_diff
 
-    return centroid, ps, pc
+    return centroid, optimizer.ps, optimizer.pc
 
 end
