@@ -17,9 +17,11 @@ using Parameters
     ccov1::Any
     ccovmu::Any
     C::Any
+    sigma::Any
+    damps::Any
 end
 
-function tell(optimizer::OptimizerCmaEs, rewards_training, genomes, B, diagD, sigma)
+function tell(optimizer::OptimizerCmaEs, rewards_training, genomes, B, diagD)
 
     genomes_sorted = genomes[sortperm(rewards_training, rev = true), :]
 
@@ -31,7 +33,7 @@ function tell(optimizer::OptimizerCmaEs, rewards_training, genomes, B, diagD, si
     # Cumulation : update evolution path
     optimizer.ps =
         (1 - optimizer.cs) .* optimizer.ps +
-        sqrt(optimizer.cs * (2 - optimizer.cs) * optimizer.mueff) ./ sigma *
+        sqrt(optimizer.cs * (2 - optimizer.cs) * optimizer.mueff) ./ optimizer.sigma *
         B *
         ((1 ./ diagD) .* B' * c_diff)
 
@@ -45,7 +47,8 @@ function tell(optimizer::OptimizerCmaEs, rewards_training, genomes, B, diagD, si
 
     optimizer.pc =
         (1 - optimizer.cc) * optimizer.pc +
-        hsig * sqrt(optimizer.cc * (2 - optimizer.cc) * optimizer.mueff) / sigma * c_diff
+        hsig * sqrt(optimizer.cc * (2 - optimizer.cc) * optimizer.mueff) / optimizer.sigma *
+        c_diff
 
     # Update covariance matrix
     artmp = genomes_sorted[1:optimizer.mu, :]' .- old_centroid
@@ -56,6 +59,8 @@ function tell(optimizer::OptimizerCmaEs, rewards_training, genomes, B, diagD, si
             (1 - hsig) * optimizer.ccov1 * optimizer.cc * (2 - optimizer.cc)
         ) * optimizer.C +
         optimizer.ccov1 * optimizer.pc * optimizer.pc' +
-        optimizer.ccovmu * (optimizer.weights' .* artmp) * artmp' / sigma^2
+        optimizer.ccovmu * (optimizer.weights' .* artmp) * artmp' / optimizer.sigma^2
+
+    optimizer.sigma *= exp((norm(optimizer.ps) / optimizer.chiN - 1) * optimizer.cs / optimizer.damps)
 
 end

@@ -31,6 +31,8 @@ free_parameters = 1000
         ccov1 = optimizer1.ccov1,
         ccovmu = optimizer1.ccovmu,
         C = optimizer1.C,
+        sigma = optimizer1.sigma,
+        damps = optimizer1.damps,
     )
 
     for generation = 1:number_generations
@@ -43,7 +45,7 @@ free_parameters = 1000
 
         # Tell optimizers new rewards
         tell(optimizer1, rewards_training)
-        tell(optimizer2, rewards_training, genomes1, B1, diagD1, sigma1)
+        tell(optimizer2, rewards_training, genomes1, B1, diagD1)
 
         # Compare internal states of both optimizers
         @test optimizer1.centroid ≈ optimizer2.centroid atol = 0.00001
@@ -51,6 +53,7 @@ free_parameters = 1000
         @test optimizer1.update_count ≈ optimizer2.update_count atol = 0.00001
         @test optimizer1.pc ≈ optimizer2.pc atol = 0.00001
         @test optimizer1.C ≈ optimizer2.C atol = 0.00001
+        @test optimizer1.sigma ≈ optimizer2.sigma atol = 0.00001
 
     end
 end
