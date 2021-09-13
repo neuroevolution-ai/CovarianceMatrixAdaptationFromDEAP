@@ -15,6 +15,9 @@ using Parameters
     pc::Any
     centroid::Any
     update_count::Any
+    ccov1::Any
+    ccovmu::Any
+    C::Any
     opt::Any
 end
 
@@ -36,6 +39,9 @@ function inititalize_optimizer(individual_size, configuration)
         pc = opt.strategy.pc,
         centroid = opt.strategy.centroid,
         update_count = opt.strategy.update_count,
+        ccov1 = opt.strategy.ccov1,
+        ccovmu = opt.strategy.ccovmu,
+        C = opt.strategy.C,
         opt = opt,
     )
 
@@ -64,6 +70,8 @@ function tell(optimizer, rewards)
 
     optimizer.centroid = strategy.centroid
     optimizer.ps = strategy.ps
-    optimizer.pc = strategy.pc
     optimizer.update_count = strategy.update_count
+    optimizer.pc = strategy.pc
+    optimizer.C = strategy.C
+   
 end

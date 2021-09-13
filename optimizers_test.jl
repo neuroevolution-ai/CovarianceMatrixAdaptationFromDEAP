@@ -26,8 +26,11 @@ free_parameters = 1000
         cs = optimizer1.cs,
         ps = optimizer1.ps,
         pc = optimizer1.pc,
-        update_count = optimizer1.update_count,
         centroid = optimizer1.centroid,
+        update_count = optimizer1.update_count,
+        ccov1 = optimizer1.ccov1,
+        ccovmu = optimizer1.ccovmu,
+        C = optimizer1.C,
     )
 
     for generation = 1:number_generations
@@ -47,6 +50,8 @@ free_parameters = 1000
         @test optimizer1.ps ≈ optimizer2.ps atol = 0.00001
         @test optimizer1.update_count ≈ optimizer2.update_count atol = 0.00001
         @test optimizer1.pc ≈ optimizer2.pc atol = 0.00001
+        @test optimizer1.C ≈ optimizer2.C atol = 0.00001
+
     end
 end
 

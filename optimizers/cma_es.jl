@@ -14,9 +14,12 @@ using Parameters
     pc::Any
     centroid::Any
     update_count::Any
+    ccov1::Any
+    ccovmu::Any
+    C::Any
 end
 
-function tell(optimizer, rewards_training, genomes, B, diagD, sigma)
+function tell(optimizer::OptimizerCmaEs, rewards_training, genomes, B, diagD, sigma)
 
     genomes_sorted = genomes[sortperm(rewards_training, rev = true), :]
 
@@ -33,7 +36,8 @@ function tell(optimizer, rewards_training, genomes, B, diagD, sigma)
         ((1 ./ diagD) .* B' * c_diff)
 
     hsig = float(
-        norm(optimizer.ps) / sqrt(1.0 - (1 - optimizer.cs)^(2 * (optimizer.update_count + 1))) /
+        norm(optimizer.ps) /
+        sqrt(1.0 - (1 - optimizer.cs)^(2 * (optimizer.update_count + 1))) /
         optimizer.chiN < (1.4 + 2 / (optimizer.dim + 1)),
     )
 
@@ -42,5 +46,16 @@ function tell(optimizer, rewards_training, genomes, B, diagD, sigma)
     optimizer.pc =
         (1 - optimizer.cc) * optimizer.pc +
         hsig * sqrt(optimizer.cc * (2 - optimizer.cc) * optimizer.mueff) / sigma * c_diff
+
+    # Update covariance matrix
+    artmp = genomes_sorted[1:optimizer.mu, :]' .- old_centroid
+
+    optimizer.C =
+        (
+            1 - optimizer.ccov1 - optimizer.ccovmu +
+            (1 - hsig) * optimizer.ccov1 * optimizer.cc * (2 - optimizer.cc)
+        ) * optimizer.C +
+        optimizer.ccov1 * optimizer.pc * optimizer.pc' +
+        optimizer.ccovmu * (optimizer.weights' .* artmp) * artmp' / sigma^2
 
 end
