@@ -20,9 +20,11 @@ using Parameters
     sigma::Any
     damps::Any
     diagD::Any
+    B::Any
+    BD::Any
 end
 
-function tell(optimizer::OptimizerCmaEs, rewards_training, genomes, B)
+function tell(optimizer::OptimizerCmaEs, rewards_training, genomes, eigenvectors1, indx1)
 
     genomes_sorted = genomes[sortperm(rewards_training, rev = true), :]
 
@@ -35,8 +37,8 @@ function tell(optimizer::OptimizerCmaEs, rewards_training, genomes, B)
     optimizer.ps =
         (1 - optimizer.cs) .* optimizer.ps +
         sqrt(optimizer.cs * (2 - optimizer.cs) * optimizer.mueff) ./ optimizer.sigma *
-        B *
-        ((1 ./ optimizer.diagD) .* B' * c_diff)
+        optimizer.B *
+        ((1 ./ optimizer.diagD) .* optimizer.B' * c_diff)
 
     hsig = float(
         norm(optimizer.ps) /
@@ -65,9 +67,17 @@ function tell(optimizer::OptimizerCmaEs, rewards_training, genomes, B)
     optimizer.sigma *=
         exp((norm(optimizer.ps) / optimizer.chiN - 1) * optimizer.cs / optimizer.damps)
 
-    optimizer.diagD, vec = eigen(Hermitian(optimizer.C))
+    optimizer.diagD, optimizer.B = eigen(Hermitian(optimizer.C))
     indx = sortperm(optimizer.diagD)
 
-    optimizer.diagD = optimizer.diagD[indx].^0.5
+    # These lines are only to enable testing, since eigenvectors are not deterministic
+    @test size(indx) == size(indx1)
+    @test size(optimizer.B) == size(eigenvectors1)
+    optimizer.B = copy(eigenvectors1)
+    indx = copy(indx1 .+ 1)
+
+    optimizer.diagD = optimizer.diagD[indx] .^ 0.5
+    optimizer.B = optimizer.B[:, indx]
+    optimizer.BD = optimizer.B .* optimizer.diagD'
 
 end

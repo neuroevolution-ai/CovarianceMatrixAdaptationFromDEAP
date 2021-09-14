@@ -22,6 +22,8 @@ using Parameters
     damps::Any
     opt::Any
     diagD::Any
+    B::Any
+    BD::Any
 end
 
 function inititalize_optimizer(individual_size, configuration)
@@ -48,6 +50,8 @@ function inititalize_optimizer(individual_size, configuration)
         sigma = opt.strategy.sigma,
         damps = opt.strategy.damps,
         diagD = opt.strategy.diagD,
+        B = opt.strategy.B,
+        BD = opt.strategy.BD,
         opt = opt,
     )
 
@@ -67,12 +71,12 @@ function ask(optimizer)
         end
     end
 
-    return genomes, strategy.B, strategy.diagD
+    return genomes
 end
 
 function tell(optimizer, rewards)
 
-    strategy = optimizer.opt.tell(rewards)
+    strategy, eigenvectors, indx = optimizer.opt.tell(rewards)
 
     optimizer.centroid = strategy.centroid
     optimizer.ps = strategy.ps
@@ -81,5 +85,9 @@ function tell(optimizer, rewards)
     optimizer.C = strategy.C
     optimizer.sigma = strategy.sigma
     optimizer.diagD = strategy.diagD
+    optimizer.B = strategy.B
+    optimizer.BD = strategy.BD
+
+    return eigenvectors, indx
    
 end
