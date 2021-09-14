@@ -71,12 +71,12 @@ function ask(optimizer)
         end
     end
 
-    return genomes
+    return genomes, strategy.arzA, strategy.arzB
 end
 
 function tell(optimizer, rewards)
 
-    strategy, eigenvectors, indx = optimizer.opt.tell(rewards)
+    strategy = optimizer.opt.tell(rewards)
 
     optimizer.centroid = strategy.centroid
     optimizer.ps = strategy.ps
@@ -88,6 +88,6 @@ function tell(optimizer, rewards)
     optimizer.B = strategy.B
     optimizer.BD = strategy.BD
 
-    return eigenvectors, indx
+    return strategy.eigenvectors, strategy.indx
    
 end

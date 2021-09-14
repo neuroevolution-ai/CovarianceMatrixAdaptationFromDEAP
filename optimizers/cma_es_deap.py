@@ -41,4 +41,4 @@ class OptimizerCmaEsDeap():
         # Update the strategy with the evaluated individuals
         self.toolbox.update(self.population)
 
-        return self.strategy, self.strategy.eigenvectors, self.strategy.indx
+        return self.strategy

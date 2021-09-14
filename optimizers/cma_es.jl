@@ -24,6 +24,14 @@ using Parameters
     BD::Any
 end
 
+function ask(optimizer::OptimizerCmaEs, arzA)
+
+    arzB = optimizer.centroid' .+ (optimizer.sigma .* (arzA * optimizer.BD'))
+
+    return arzB
+
+end
+
 function tell(optimizer::OptimizerCmaEs, rewards_training, genomes, eigenvectors1, indx1)
 
     genomes_sorted = genomes[sortperm(rewards_training, rev = true), :]

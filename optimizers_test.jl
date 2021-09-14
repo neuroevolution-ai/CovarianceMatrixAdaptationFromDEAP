@@ -40,8 +40,11 @@ free_parameters = 1000
 
     for generation = 1:number_generations
 
-        # Ask optimizer for new population
-        genomes1 = ask(optimizer1)
+        # Ask optimizers for new population
+        genomes1, arzA1, arzB1 = ask(optimizer1)
+        arzB2 = ask(optimizer2, arzA1)
+
+        @test arzB1 ≈ arzB2 atol = 0.00001
 
         # Generate random rewards
         rewards_training = rand(population_size)
