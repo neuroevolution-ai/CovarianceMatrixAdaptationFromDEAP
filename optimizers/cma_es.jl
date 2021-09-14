@@ -24,11 +24,11 @@ using Parameters
     BD::Any
 end
 
-function ask(optimizer::OptimizerCmaEs, arzA)
+function ask(optimizer::OptimizerCmaEs, randoms)
 
-    arzB = optimizer.centroid' .+ (optimizer.sigma .* (arzA * optimizer.BD'))
+    genomes = optimizer.centroid' .+ (optimizer.sigma .* (randoms * optimizer.BD'))
 
-    return arzB
+    return genomes
 
 end
 
