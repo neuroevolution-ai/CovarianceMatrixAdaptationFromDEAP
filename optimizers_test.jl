@@ -36,7 +36,7 @@ free_parameters = 1000
         diagD = optimizer1.diagD,
         B = optimizer1.B,
         BD = optimizer1.BD,
-        genomes = optimizer1.genomes,
+        genomes = copy(optimizer1.genomes),
     )
 
     for generation = 1:number_generations

@@ -1,5 +1,7 @@
 using LinearAlgebra
 using Parameters
+using Distributions 
+using Random
 
 
 @with_kw mutable struct OptimizerCmaEs
@@ -27,9 +29,16 @@ end
 
 function ask(optimizer::OptimizerCmaEs, randoms)
 
-    genomes = optimizer.centroid' .+ (optimizer.sigma .* (randoms * optimizer.BD'))
+    arz = rand(Normal(), size(optimizer.genomes))
 
-    return genomes
+    @test size(arz) == size(randoms)
+    @test mean(arz) ≈ mean(randoms) atol = 0.01
+    @test std(arz) ≈ std(randoms) atol = 0.01
+    arz = randoms
+
+    optimizer.genomes = optimizer.centroid' .+ (optimizer.sigma .* (arz * optimizer.BD'))
+
+    return optimizer.genomes
 
 end
 
