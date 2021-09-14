@@ -72,6 +72,7 @@ function tell(optimizer::OptimizerCmaEs, rewards_training, genomes, eigenvectors
 
     # These lines are only to enable testing, since eigenvectors are not deterministic
     @test size(indx) == size(indx1)
+    @test optimizer.diagD[indx] ≈ optimizer.diagD[indx1.+1] atol = 0.00001
     @test size(optimizer.B) == size(eigenvectors1)
     optimizer.B = copy(eigenvectors1)
     indx = copy(indx1 .+ 1)
