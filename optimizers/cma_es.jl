@@ -34,7 +34,7 @@ function ask(optimizer::OptimizerCmaEs, randoms)
     @test size(arz) == size(randoms)
     @test mean(arz) ≈ mean(randoms) atol = 0.01
     @test std(arz) ≈ std(randoms) atol = 0.01
-    arz = randoms
+    arz = copy(randoms)
 
     optimizer.genomes = optimizer.centroid' .+ (optimizer.sigma .* (arz * optimizer.BD'))
 
