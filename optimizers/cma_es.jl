@@ -33,9 +33,9 @@ function ask(optimizer::OptimizerCmaEs, randoms)
 
 end
 
-function tell(optimizer::OptimizerCmaEs, rewards_training, genomes, eigenvectors1, indx1)
+function tell(optimizer::OptimizerCmaEs, rewards_training, eigenvectors1, indx1)
 
-    genomes_sorted = genomes[sortperm(rewards_training, rev = true), :]
+    genomes_sorted = optimizer.genomes[sortperm(rewards_training, rev = true), :]
 
     old_centroid = copy(optimizer.centroid)
     optimizer.centroid = genomes_sorted[1:optimizer.mu, :]' * optimizer.weights

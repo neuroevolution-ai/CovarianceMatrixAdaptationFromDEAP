@@ -52,7 +52,7 @@ free_parameters = 1000
 
         # Tell optimizers new rewards
         eigenvectors1, indx1 = tell(optimizer1, rewards_training)
-        tell(optimizer2, rewards_training, genomes1, eigenvectors1, indx1)
+        tell(optimizer2, rewards_training, eigenvectors1, indx1)
 
         # Compare internal states of both optimizers
         @test optimizer1.centroid ≈ optimizer2.centroid atol = 0.00001
