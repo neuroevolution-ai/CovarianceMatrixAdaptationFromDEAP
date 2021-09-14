@@ -55,6 +55,9 @@ free_parameters = 1000
         @test optimizer1.C ≈ optimizer2.C atol = 0.00001
         @test optimizer1.sigma ≈ optimizer2.sigma atol = 0.00001
 
+        # Test if C is a Hermitian matrix
+        @test optimizer2.C ≈ Hermitian(optimizer2.C) atol = 0.00001
+
     end
 end
 
