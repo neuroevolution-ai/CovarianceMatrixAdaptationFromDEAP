@@ -22,6 +22,7 @@ using Parameters
     diagD::Any
     B::Any
     BD::Any
+    genomes::Any
 end
 
 function ask(optimizer::OptimizerCmaEs, randoms)

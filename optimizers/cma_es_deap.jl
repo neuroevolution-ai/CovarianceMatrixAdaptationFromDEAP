@@ -4,6 +4,7 @@ using Parameters
 
 
 @with_kw mutable struct OptimizerCmaEsDeap
+    opt::Any
     dim::Any
     chiN::Any
     mu::Any
@@ -20,10 +21,10 @@ using Parameters
     C::Any
     sigma::Any
     damps::Any
-    opt::Any
     diagD::Any
     B::Any
     BD::Any
+    genomes::Any
 end
 
 function inititalize_optimizer(individual_size, configuration)
@@ -33,6 +34,7 @@ function inititalize_optimizer(individual_size, configuration)
     opt = optimizer.OptimizerCmaEsDeap(individual_size, configuration)
 
     optimizer = OptimizerCmaEsDeap(
+        opt = opt,
         dim = opt.strategy.dim,
         chiN = opt.strategy.chiN,
         mu = opt.strategy.mu,
@@ -52,7 +54,8 @@ function inititalize_optimizer(individual_size, configuration)
         diagD = opt.strategy.diagD,
         B = opt.strategy.B,
         BD = opt.strategy.BD,
-        opt = opt,
+        genomes = Matrix(undef, opt.strategy.lambda_, individual_size),
+        
     )
 
     return optimizer
@@ -62,16 +65,14 @@ function ask(optimizer)
 
     genomes_list, population_size, individual_size, strategy = optimizer.opt.ask()
 
-    genomes = Matrix(undef, population_size, individual_size)
-
     # The genomes need to be reshaped into a MxN matrix.
     for i = 1:population_size
         for j = 1:individual_size
-            genomes[i, j] = (genomes_list[i])[j]
+            optimizer.genomes[i, j] = (genomes_list[i])[j]
         end
     end
 
-    return genomes, strategy.randoms
+    return optimizer.genomes, strategy.randoms
 end
 
 function tell(optimizer, rewards)
