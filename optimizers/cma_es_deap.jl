@@ -21,6 +21,7 @@ using Parameters
     sigma::Any
     damps::Any
     opt::Any
+    diagD::Any
 end
 
 function inititalize_optimizer(individual_size, configuration)
@@ -46,6 +47,7 @@ function inititalize_optimizer(individual_size, configuration)
         C = opt.strategy.C,
         sigma = opt.strategy.sigma,
         damps = opt.strategy.damps,
+        diagD = opt.strategy.diagD,
         opt = opt,
     )
 
@@ -78,5 +80,6 @@ function tell(optimizer, rewards)
     optimizer.pc = strategy.pc
     optimizer.C = strategy.C
     optimizer.sigma = strategy.sigma
+    optimizer.diagD = strategy.diagD
    
 end

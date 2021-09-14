@@ -33,6 +33,7 @@ free_parameters = 1000
         C = optimizer1.C,
         sigma = optimizer1.sigma,
         damps = optimizer1.damps,
+        diagD = optimizer1.diagD,
     )
 
     for generation = 1:number_generations
@@ -45,7 +46,7 @@ free_parameters = 1000
 
         # Tell optimizers new rewards
         tell(optimizer1, rewards_training)
-        tell(optimizer2, rewards_training, genomes1, B1, diagD1)
+        tell(optimizer2, rewards_training, genomes1, B1)
 
         # Compare internal states of both optimizers
         @test optimizer1.centroid ≈ optimizer2.centroid atol = 0.00001
@@ -54,6 +55,7 @@ free_parameters = 1000
         @test optimizer1.pc ≈ optimizer2.pc atol = 0.00001
         @test optimizer1.C ≈ optimizer2.C atol = 0.00001
         @test optimizer1.sigma ≈ optimizer2.sigma atol = 0.00001
+        @test optimizer1.diagD ≈ optimizer2.diagD atol = 0.00001
 
         # Test if C is a Hermitian matrix
         @test optimizer2.C ≈ Hermitian(optimizer2.C) atol = 0.00001

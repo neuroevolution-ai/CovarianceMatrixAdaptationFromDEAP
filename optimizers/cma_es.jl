@@ -19,9 +19,10 @@ using Parameters
     C::Any
     sigma::Any
     damps::Any
+    diagD::Any
 end
 
-function tell(optimizer::OptimizerCmaEs, rewards_training, genomes, B, diagD)
+function tell(optimizer::OptimizerCmaEs, rewards_training, genomes, B)
 
     genomes_sorted = genomes[sortperm(rewards_training, rev = true), :]
 
@@ -35,7 +36,7 @@ function tell(optimizer::OptimizerCmaEs, rewards_training, genomes, B, diagD)
         (1 - optimizer.cs) .* optimizer.ps +
         sqrt(optimizer.cs * (2 - optimizer.cs) * optimizer.mueff) ./ optimizer.sigma *
         B *
-        ((1 ./ diagD) .* B' * c_diff)
+        ((1 ./ optimizer.diagD) .* B' * c_diff)
 
     hsig = float(
         norm(optimizer.ps) /
@@ -63,5 +64,10 @@ function tell(optimizer::OptimizerCmaEs, rewards_training, genomes, B, diagD)
 
     optimizer.sigma *=
         exp((norm(optimizer.ps) / optimizer.chiN - 1) * optimizer.cs / optimizer.damps)
+
+    optimizer.diagD, vec = eigen(Hermitian(optimizer.C))
+    indx = sortperm(optimizer.diagD)
+
+    optimizer.diagD = optimizer.diagD[indx].^0.5
 
 end
