@@ -1,5 +1,3 @@
-# CovarianceMatrixAdaptationFromDEAP
-
 # You need a slightly modified Deap version for testing
 
 1. Uninstall `deap`
