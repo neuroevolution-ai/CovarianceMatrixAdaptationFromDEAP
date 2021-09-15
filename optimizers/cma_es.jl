@@ -88,7 +88,11 @@ function tell(optimizer::OptimizerCmaEs, rewards_training, eigenvectors1, indx1)
 
     @test Hermitian(optimizer.C) ≈ optimizer.C atol = 0.00001
 
-    optimizer.diagD, optimizer.B = eigen(Hermitian(optimizer.C))
+    C_GPU = CuArray(optimizer.C)
+    val_GPU, vec_GPU = CUDA.CUSOLVER.syevd!('V', 'U', C_GPU)
+    optimizer.diagD = Array(val_GPU)
+    optimizer.B = Array(vec_GPU)
+    
     indx = sortperm(optimizer.diagD)
 
     # These lines are only to enable testing, since eigenvectors are not deterministic
