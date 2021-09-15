@@ -1,6 +1,7 @@
 using LinearAlgebra
+using CUDA
 using Parameters
-using Distributions 
+using Distributions
 using Random
 
 
@@ -84,6 +85,8 @@ function tell(optimizer::OptimizerCmaEs, rewards_training, eigenvectors1, indx1)
 
     optimizer.sigma *=
         exp((norm(optimizer.ps) / optimizer.chiN - 1) * optimizer.cs / optimizer.damps)
+
+    @test Hermitian(optimizer.C) ≈ optimizer.C atol = 0.00001
 
     optimizer.diagD, optimizer.B = eigen(Hermitian(optimizer.C))
     indx = sortperm(optimizer.diagD)
