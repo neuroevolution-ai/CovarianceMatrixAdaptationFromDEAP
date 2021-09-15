@@ -32,7 +32,7 @@ function ask(optimizer::OptimizerCmaEs, randoms)
     arz = rand(Normal(), size(optimizer.genomes))
 
     @test size(arz) == size(randoms)
-    @test mean(arz) ≈ mean(randoms) atol = 0.01
+    @test mean(arz) ≈ mean(randoms) atol = 0.1
     @test std(arz) ≈ std(randoms) atol = 0.01
     arz = copy(randoms)
 
