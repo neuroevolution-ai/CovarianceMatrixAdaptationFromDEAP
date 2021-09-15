@@ -26,6 +26,10 @@ using Random
     B::Any
     BD::Any
     genomes::Any
+
+    function OptimizerCmaEs(dim, chiN, mu, weights, mueff, cc, cs, ps, pc, centroid, update_count, ccov1, ccovmu, C, sigma, damps, diagD, B, BD, genomes)
+        new(dim, chiN, mu, weights, mueff, cc, cs, ps, pc, centroid, update_count, ccov1, ccovmu, C, sigma, damps, diagD, B, BD, genomes)
+    end
 end
 
 function ask(optimizer::OptimizerCmaEs, randoms)
