@@ -5,6 +5,7 @@ using Parameters
 
 @with_kw mutable struct OptimizerCmaEsDeap
     opt::Any
+    lambda_::Any
     dim::Any
     chiN::Any
     mu::Any
@@ -35,6 +36,7 @@ function inititalize_optimizer(individual_size, configuration)
 
     optimizer = OptimizerCmaEsDeap(
         opt = opt,
+        lambda_ = opt.strategy.lambda_,
         dim = opt.strategy.dim,
         chiN = opt.strategy.chiN,
         mu = opt.strategy.mu,
@@ -54,11 +56,11 @@ function inititalize_optimizer(individual_size, configuration)
         diagD = opt.strategy.diagD,
         B = opt.strategy.B,
         BD = opt.strategy.BD,
-        genomes = Matrix(undef, opt.strategy.lambda_, individual_size),
+        genomes = zeros(opt.strategy.lambda_, individual_size),
         
     )
 
-    return optimizer
+    return optimizer, opt.strategy.eigenvectors, opt.strategy.indx
 end
 
 function ask(optimizer)

@@ -5,6 +5,7 @@ using Random
 
 
 mutable struct OptimizerCmaEs
+    lambda_::Any
     dim::Any
     chiN::Any
     mu::Any
@@ -26,16 +27,41 @@ mutable struct OptimizerCmaEs
     BD::Any
     genomes::Any
 
-    function OptimizerCmaEs(mu, weights, mueff, cc, cs, centroid, update_count, ccov1, ccovmu, sigma, damps, diagD, B, BD, genomes)
+    function OptimizerCmaEs(individual_size, population_size, sigma, mu, weights, mueff, cc, cs, ccov1, ccovmu, damps, eigenvectors1, indx1)
 
-        dim = size(centroid, 1)
+        dim = individual_size
         pc = zeros(dim)
         ps = zeros(dim)
         chiN = sqrt(dim) * (1 - 1 / (4 * dim) + 1 / (21 * dim^2))
 
         C =  Matrix(1.0I, dim, dim)
 
-        new(dim, chiN, mu, weights, mueff, cc, cs, ps, pc, centroid, update_count, ccov1, ccovmu, C, sigma, damps, diagD, B, BD, genomes)
+        C_GPU = CuArray(C)
+        val_GPU, vec_GPU = CUDA.CUSOLVER.syevd!('V', 'U', C_GPU)
+        diagD = Array(val_GPU)
+        B = Array(vec_GPU)
+
+        indx = sortperm(diagD)
+
+        # These lines are only to enable testing, since eigenvectors are not deterministic
+        @test size(indx) == size(indx1)
+        @test diagD[indx] ≈ diagD[indx1.+1] atol = 0.00001
+        @test size(B) == size(eigenvectors1)
+        B = copy(eigenvectors1)
+        indx = copy(indx1 .+ 1)
+
+        diagD = diagD[indx] .^ 0.5
+        B = B[:, indx]
+        BD = B .* diagD'
+
+        lambda_ = population_size
+        update_count = 0
+
+        centroid = zeros(individual_size)
+
+        genomes = zeros(lambda_, individual_size)
+
+        new(lambda_, dim, chiN, mu, weights, mueff, cc, cs, ps, pc, centroid, update_count, ccov1, ccovmu, C, sigma, damps, diagD, B, BD, genomes)
     end
 end
 

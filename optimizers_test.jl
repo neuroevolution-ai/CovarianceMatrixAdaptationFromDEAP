@@ -15,30 +15,44 @@ free_parameters = 1000
     # Initialize Optimizers
     # Optimizer1: CMA-ES optimizer of the Python deap package using PyCall
     # Optimizer2: Identical CMA-ES optimizer implemented in Julia
-    optimizer1 = inititalize_optimizer(free_parameters, optimizer_configuration)
+    optimizer1, eigenvectors, indx = inititalize_optimizer(free_parameters, optimizer_configuration)
     optimizer2 = OptimizerCmaEs(
+        free_parameters,
+        population_size,
+        sigma,
         copy(optimizer1.mu),
         copy(optimizer1.weights),
         copy(optimizer1.mueff),
         copy(optimizer1.cc),
         copy(optimizer1.cs),
-        copy(optimizer1.centroid),
-        copy(optimizer1.update_count),
         copy(optimizer1.ccov1),
         copy(optimizer1.ccovmu),
-        copy(optimizer1.sigma),
         copy(optimizer1.damps),
-        copy(optimizer1.diagD),
-        copy(optimizer1.B),
-        copy(optimizer1.BD),
-        copy(optimizer1.genomes),
+        eigenvectors,
+        indx,
     )
 
+    @test optimizer1.lambda_ ≈ optimizer2.lambda_ atol = 0.00001
     @test optimizer1.dim ≈ optimizer2.dim atol = 0.00001
-    @test optimizer1.pc ≈ optimizer2.pc atol = 0.00001
-    @test optimizer1.ps ≈ optimizer2.ps atol = 0.00001
     @test optimizer1.chiN ≈ optimizer2.chiN atol = 0.00001
+    #@test optimizer1.mu ≈ optimizer2.mu atol = 0.00001
+    #@test optimizer1.weights ≈ optimizer2.weights atol = 0.00001
+    #@test optimizer1.mueff ≈ optimizer2.mueff atol = 0.00001
+    #@test optimizer1.cc ≈ optimizer2.cc atol = 0.00001
+    #@test optimizer1.cs ≈ optimizer2.cs atol = 0.00001
+    @test optimizer1.ps ≈ optimizer2.ps atol = 0.00001
+    @test optimizer1.pc ≈ optimizer2.pc atol = 0.00001
+    @test optimizer1.centroid ≈ optimizer2.centroid atol = 0.00001
+    @test optimizer1.update_count ≈ optimizer2.update_count atol = 0.00001
+    #@test optimizer1.ccov1 ≈ optimizer2.ccov1 atol = 0.00001
+    #@test optimizer1.ccovmu ≈ optimizer2.ccovmu atol = 0.00001
     @test optimizer1.C ≈ optimizer2.C atol = 0.00001
+    @test optimizer1.sigma ≈ optimizer2.sigma atol = 0.00001
+    #@test optimizer1.damps ≈ optimizer2.damps atol = 0.00001
+    @test optimizer1.diagD ≈ optimizer2.diagD atol = 0.00001
+    @test optimizer1.B ≈ optimizer2.B atol = 0.00001
+    @test optimizer1.BD ≈ optimizer2.B atol = 0.00001
+    @test optimizer1.genomes ≈ optimizer2.genomes atol = 0.00001
 
     for generation = 1:number_generations
 
