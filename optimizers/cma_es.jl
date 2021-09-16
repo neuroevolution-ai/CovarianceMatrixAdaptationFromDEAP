@@ -1,11 +1,10 @@
 using LinearAlgebra
 using CUDA
-using Parameters
 using Distributions
 using Random
 
 
-@with_kw mutable struct OptimizerCmaEs
+mutable struct OptimizerCmaEs
     dim::Any
     chiN::Any
     mu::Any
@@ -27,7 +26,10 @@ using Random
     BD::Any
     genomes::Any
 
-    function OptimizerCmaEs(dim, chiN, mu, weights, mueff, cc, cs, ps, pc, centroid, update_count, ccov1, ccovmu, C, sigma, damps, diagD, B, BD, genomes)
+    function OptimizerCmaEs(chiN, mu, weights, mueff, cc, cs, ps, pc, centroid, update_count, ccov1, ccovmu, C, sigma, damps, diagD, B, BD, genomes)
+
+        dim = size(centroid, 1)
+
         new(dim, chiN, mu, weights, mueff, cc, cs, ps, pc, centroid, update_count, ccov1, ccovmu, C, sigma, damps, diagD, B, BD, genomes)
     end
 end

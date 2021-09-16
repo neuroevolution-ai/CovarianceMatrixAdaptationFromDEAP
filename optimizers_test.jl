@@ -17,27 +17,28 @@ free_parameters = 1000
     # Optimizer2: Identical CMA-ES optimizer implemented in Julia
     optimizer1 = inititalize_optimizer(free_parameters, optimizer_configuration)
     optimizer2 = OptimizerCmaEs(
-        dim = copy(optimizer1.dim),
-        chiN = copy(optimizer1.chiN),
-        mu = copy(optimizer1.mu),
-        weights = copy(optimizer1.weights),
-        mueff = copy(optimizer1.mueff),
-        cc = copy(optimizer1.cc),
-        cs = copy(optimizer1.cs),
-        ps = copy(optimizer1.ps),
-        pc = copy(optimizer1.pc),
-        centroid = copy(optimizer1.centroid),
-        update_count = copy(optimizer1.update_count),
-        ccov1 = copy(optimizer1.ccov1),
-        ccovmu = copy(optimizer1.ccovmu),
-        C = copy(optimizer1.C),
-        sigma = copy(optimizer1.sigma),
-        damps = copy(optimizer1.damps),
-        diagD = copy(optimizer1.diagD),
-        B = copy(optimizer1.B),
-        BD = copy(optimizer1.BD),
-        genomes = copy(optimizer1.genomes),
+        copy(optimizer1.chiN),
+        copy(optimizer1.mu),
+        copy(optimizer1.weights),
+        copy(optimizer1.mueff),
+        copy(optimizer1.cc),
+        copy(optimizer1.cs),
+        copy(optimizer1.ps),
+        copy(optimizer1.pc),
+        copy(optimizer1.centroid),
+        copy(optimizer1.update_count),
+        copy(optimizer1.ccov1),
+        copy(optimizer1.ccovmu),
+        copy(optimizer1.C),
+        copy(optimizer1.sigma),
+        copy(optimizer1.damps),
+        copy(optimizer1.diagD),
+        copy(optimizer1.B),
+        copy(optimizer1.BD),
+        copy(optimizer1.genomes),
     )
+
+    @test optimizer1.dim ≈ optimizer2.dim atol = 0.00001
 
     for generation = 1:number_generations
 
