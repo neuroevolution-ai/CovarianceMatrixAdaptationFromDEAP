@@ -84,6 +84,7 @@ function ask(optimizer::OptimizerCmaEs, randoms)
 
     arz = rand(Normal(), size(optimizer.genomes))
 
+    # These lines are only to enable testing to deal with random
     @test size(arz) == size(randoms)
     @test mean(arz) ≈ mean(randoms) atol = 0.1
     @test std(arz) ≈ std(randoms) atol = 0.01
