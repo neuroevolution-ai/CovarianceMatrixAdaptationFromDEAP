@@ -27,7 +27,9 @@ mutable struct OptimizerCmaEs
     BD::Any
     genomes::Any
 
-    function OptimizerCmaEs(individual_size, population_size, sigma, mu, weights, mueff, cc, cs, ccov1, ccovmu, damps, eigenvectors1, indx1)
+    function OptimizerCmaEs(individual_size, population_size, sigma, eigenvectors1, indx1)
+
+        centroid = zeros(individual_size)
 
         dim = individual_size
         pc = zeros(dim)
@@ -57,10 +59,20 @@ mutable struct OptimizerCmaEs
         lambda_ = population_size
         update_count = 0
 
-        centroid = zeros(individual_size)
+        # Compute params
+        mu = Int(lambda_ / 2)
+        weights = log(mu + 0.5) .- log.(collect(1:mu))
+        weights /= sum(weights)
+        mueff = 1 / sum(weights.^2)
+        cc = 4 / (dim + 4)
+        cs = (mueff + 2) / (dim + mueff + 3)
+        ccov1 =  2 / ((dim + 1.3)^2 + mueff)
+        ccovmu = 2 * (mueff - 2 + 1 / mueff) / ((dim + 2)^2 + mueff)
+        ccovmu = min(1 - ccov1, ccovmu)
+        damps = 1 + 2 * max(0, sqrt((mueff - 1) / (dim + 1)) - 1) + cs
 
         genomes = zeros(lambda_, individual_size)
-
+    
         new(lambda_, dim, chiN, mu, weights, mueff, cc, cs, ps, pc, centroid, update_count, ccov1, ccovmu, C, sigma, damps, diagD, B, BD, genomes)
     end
 end
