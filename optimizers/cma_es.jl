@@ -39,7 +39,7 @@ mutable struct OptimizerCmaEs
         ps = zeros(dim)
         chiN = sqrt(dim) * (1 - 1 / (4 * dim) + 1 / (21 * dim^2))
 
-        C =  Matrix(1.0I, dim, dim)
+        C = Matrix(1.0I, dim, dim)
 
         C_GPU = CuArray(C)
         val_GPU, vec_GPU = CUDA.CUSOLVER.syevd!('V', 'U', C_GPU)
@@ -66,16 +66,16 @@ mutable struct OptimizerCmaEs
         mu = Int(lambda_ / 2)
         weights = log(mu + 0.5) .- log.(collect(1:mu))
         weights /= sum(weights)
-        mueff = 1 / sum(weights.^2)
+        mueff = 1 / sum(weights .^ 2)
         cc = 4 / (dim + 4)
         cs = (mueff + 2) / (dim + mueff + 3)
-        ccov1 =  2 / ((dim + 1.3)^2 + mueff)
+        ccov1 = 2 / ((dim + 1.3)^2 + mueff)
         ccovmu = 2 * (mueff - 2 + 1 / mueff) / ((dim + 2)^2 + mueff)
         ccovmu = min(1 - ccov1, ccovmu)
         damps = 1 + 2 * max(0, sqrt((mueff - 1) / (dim + 1)) - 1) + cs
 
         genomes = zeros(lambda_, individual_size)
-    
+
         new(lambda_, dim, chiN, mu, weights, mueff, cc, cs, ps, pc, centroid, update_count, ccov1, ccovmu, C, sigma, damps, diagD, B, BD, genomes)
     end
 end
@@ -145,7 +145,7 @@ function tell(optimizer::OptimizerCmaEs, rewards_training, eigenvectors1, indx1)
     val_GPU, vec_GPU = CUDA.CUSOLVER.syevd!('V', 'U', C_GPU)
     optimizer.diagD = Array(val_GPU)
     optimizer.B = Array(vec_GPU)
-    
+
     indx = sortperm(optimizer.diagD)
 
     # These lines are only to enable testing, since eigenvectors are not deterministic
