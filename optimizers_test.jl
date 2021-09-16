@@ -17,7 +17,6 @@ free_parameters = 1000
     # Optimizer2: Identical CMA-ES optimizer implemented in Julia
     optimizer1 = inititalize_optimizer(free_parameters, optimizer_configuration)
     optimizer2 = OptimizerCmaEs(
-        copy(optimizer1.chiN),
         copy(optimizer1.mu),
         copy(optimizer1.weights),
         copy(optimizer1.mueff),
@@ -27,7 +26,6 @@ free_parameters = 1000
         copy(optimizer1.update_count),
         copy(optimizer1.ccov1),
         copy(optimizer1.ccovmu),
-        copy(optimizer1.C),
         copy(optimizer1.sigma),
         copy(optimizer1.damps),
         copy(optimizer1.diagD),
@@ -39,6 +37,8 @@ free_parameters = 1000
     @test optimizer1.dim ≈ optimizer2.dim atol = 0.00001
     @test optimizer1.pc ≈ optimizer2.pc atol = 0.00001
     @test optimizer1.ps ≈ optimizer2.ps atol = 0.00001
+    @test optimizer1.chiN ≈ optimizer2.chiN atol = 0.00001
+    @test optimizer1.C ≈ optimizer2.C atol = 0.00001
 
     for generation = 1:number_generations
 

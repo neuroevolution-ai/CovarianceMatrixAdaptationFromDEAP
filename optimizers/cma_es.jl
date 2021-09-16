@@ -26,11 +26,14 @@ mutable struct OptimizerCmaEs
     BD::Any
     genomes::Any
 
-    function OptimizerCmaEs(chiN, mu, weights, mueff, cc, cs, centroid, update_count, ccov1, ccovmu, C, sigma, damps, diagD, B, BD, genomes)
+    function OptimizerCmaEs(mu, weights, mueff, cc, cs, centroid, update_count, ccov1, ccovmu, sigma, damps, diagD, B, BD, genomes)
 
         dim = size(centroid, 1)
         pc = zeros(dim)
         ps = zeros(dim)
+        chiN = sqrt(dim) * (1 - 1 / (4 * dim) + 1 / (21 * dim^2))
+
+        C =  Matrix(1.0I, dim, dim)
 
         new(dim, chiN, mu, weights, mueff, cc, cs, ps, pc, centroid, update_count, ccov1, ccovmu, C, sigma, damps, diagD, B, BD, genomes)
     end
