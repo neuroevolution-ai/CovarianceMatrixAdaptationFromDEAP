@@ -19,7 +19,7 @@ tolerance = 0.00001
     # Optimizer1: CMA-ES optimizer of the Python deap package using PyCall
     # Optimizer2: Identical CMA-ES optimizer implemented in Julia
     optimizer1, eigenvectors, indx = inititalize_optimizer(free_parameters, optimizer_configuration)
-    optimizer2 = OptimizerCmaEs(free_parameters, population_size, sigma, eigenvectors, indx)
+    optimizer2 = OptimizerCmaEs(free_parameters, optimizer_configuration, eigenvectors, indx)
 
     # Compare internal states of both optimizers
     compare_optimizer_states(optimizer1, optimizer2, tolerance)

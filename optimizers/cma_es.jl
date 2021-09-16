@@ -27,7 +27,10 @@ mutable struct OptimizerCmaEs
     BD::Any
     genomes::Any
 
-    function OptimizerCmaEs(individual_size, population_size, sigma, eigenvectors1, indx1)
+    function OptimizerCmaEs(individual_size, optimizer_configuration, eigenvectors1, indx1)
+
+        population_size = optimizer_configuration["population_size"]
+        sigma = optimizer_configuration["sigma"]
 
         centroid = zeros(individual_size)
 
