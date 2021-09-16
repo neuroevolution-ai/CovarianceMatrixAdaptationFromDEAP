@@ -3,6 +3,14 @@ using CUDA
 using Distributions
 using Random
 
+struct OptimizerCmaEsCfg
+    population_size::Int
+    sigma::Float64
+
+    function OptimizerCmaEsCfg(configuration::Dict)
+        new(configuration["population_size"], configuration["sigma"]) 
+    end
+end
 
 mutable struct OptimizerCmaEs
     lambda_::Any
@@ -29,8 +37,7 @@ mutable struct OptimizerCmaEs
 
     function OptimizerCmaEs(individual_size, optimizer_configuration, eigenvectors1, indx1)
 
-        population_size = optimizer_configuration["population_size"]
-        sigma = optimizer_configuration["sigma"]
+        config = OptimizerCmaEsCfg(optimizer_configuration)
 
         centroid = zeros(individual_size)
 
@@ -59,7 +66,7 @@ mutable struct OptimizerCmaEs
         B = B[:, indx]
         BD = B .* diagD'
 
-        lambda_ = population_size
+        lambda_ = config.population_size
         update_count = 0
 
         # Compute params
@@ -76,7 +83,7 @@ mutable struct OptimizerCmaEs
 
         genomes = zeros(lambda_, individual_size)
 
-        new(lambda_, dim, chiN, mu, weights, mueff, cc, cs, ps, pc, centroid, update_count, ccov1, ccovmu, C, sigma, damps, diagD, B, BD, genomes)
+        new(lambda_, dim, chiN, mu, weights, mueff, cc, cs, ps, pc, centroid, update_count, ccov1, ccovmu, C, config.sigma, damps, diagD, B, BD, genomes)
     end
 end
 
