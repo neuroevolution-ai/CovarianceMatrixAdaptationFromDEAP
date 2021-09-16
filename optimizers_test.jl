@@ -23,8 +23,6 @@ free_parameters = 1000
         copy(optimizer1.mueff),
         copy(optimizer1.cc),
         copy(optimizer1.cs),
-        copy(optimizer1.ps),
-        copy(optimizer1.pc),
         copy(optimizer1.centroid),
         copy(optimizer1.update_count),
         copy(optimizer1.ccov1),
@@ -39,6 +37,8 @@ free_parameters = 1000
     )
 
     @test optimizer1.dim ≈ optimizer2.dim atol = 0.00001
+    @test optimizer1.pc ≈ optimizer2.pc atol = 0.00001
+    @test optimizer1.ps ≈ optimizer2.ps atol = 0.00001
 
     for generation = 1:number_generations
 
