@@ -57,6 +57,8 @@ mutable struct OptimizerCmaEs
 
         if test == true
             eigenvectors = copy(B)
+        else
+            eigenvectors = Nothing
         end
 
         diagD = diagD[indx] .^ 0.5
@@ -145,6 +147,8 @@ function tell(optimizer::OptimizerCmaEs, rewards_training; test = false)
 
     if test == true
         eigenvectors = copy(optimizer.B)
+    else
+        eigenvectors = Nothing
     end
 
     optimizer.diagD = optimizer.diagD[indx] .^ 0.5
