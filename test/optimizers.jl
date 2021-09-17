@@ -1,7 +1,7 @@
 using Test
 
-include("../optimizers/cma_es_deap.jl")
-include("../optimizers/cma_es.jl")
+include("optimizers/cma_es_deap.jl")
+include("optimizers/cma_es_test.jl")
 include("../tools/compare_optimizer_states.jl")
 
 number_generations = 100
