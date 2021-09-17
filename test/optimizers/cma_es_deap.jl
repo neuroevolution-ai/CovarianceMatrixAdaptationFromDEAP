@@ -32,9 +32,9 @@ mutable struct OptimizerCmaEsDeap
         optimizer_deap = pyimport("cma_es_deap")
         opt = optimizer_deap.OptimizerCmaEsDeap(individual_size, configuration)
 
-        lambda_ =  opt.strategy.lambda_
-        dim =  opt.strategy.dim
-        chiN =  opt.strategy.chiN
+        lambda_ = opt.strategy.lambda_
+        dim = opt.strategy.dim
+        chiN = opt.strategy.chiN
         mu = opt.strategy.mu
         weights = opt.strategy.weights
         mueff = opt.strategy.mueff
@@ -56,7 +56,7 @@ mutable struct OptimizerCmaEsDeap
         indx = opt.strategy.indx
         genomes = zeros(opt.strategy.lambda_, individual_size)
 
-        optimizer = new(opt, lambda_, dim, chiN,  mu,  weights, mueff, cc, cs,  ps,  pc, centroid, update_count, ccov1, ccovmu, C, sigma, damps, diagD, B, BD,  genomes)
+        optimizer = new(opt, lambda_, dim, chiN, mu, weights, mueff, cc, cs, ps, pc, centroid, update_count, ccov1, ccovmu, C, sigma, damps, diagD, B, BD, genomes)
 
         return optimizer, eigenvectors, indx .+ 1
     end
