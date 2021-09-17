@@ -13,21 +13,14 @@ free_parameters = 1000
 tolerance = 0.00001
 
 @testset "Optimizers" begin
-    @testset "Compare CMA-ES optimizers implemented in Julia" begin
-        optimizer_configuration =
-            Dict("sigma" => sigma, "population_size" => population_size)
+    @testset "Compare both CMA-ES optimizers implemented in Julia" begin
+        optimizer_configuration = Dict("sigma" => sigma, "population_size" => population_size)
 
         # Initialize Optimizers
         # Optimizer1: CMA-ES optimizer implemented in Julia
         # Optimizer2: Identical CMA-ES test optimizer implemented in Julia
-        optimizer1, eigenvectors1, indx1 =
-            OptimizerCmaEs(free_parameters, optimizer_configuration, test = true)
-        optimizer2 = OptimizerCmaEsTest(
-            free_parameters,
-            optimizer_configuration,
-            eigenvectors1,
-            indx1,
-        )
+        optimizer1, eigenvectors1, indx1 = OptimizerCmaEs(free_parameters, optimizer_configuration, test = true)
+        optimizer2 = OptimizerCmaEsTest(free_parameters, optimizer_configuration, eigenvectors1, indx1)
 
         # Compare internal states of both optimizers
         compare_optimizer_states(optimizer1, optimizer2, tolerance)
@@ -56,14 +49,14 @@ tolerance = 0.00001
         end
     end
 
-    @testset "Compare with Python Deap optimizer" begin
+    @testset "Compare CMA-ES optimizer implemented in Julia with Python Deap optimizer" begin
         optimizer_configuration =
             Dict("sigma" => sigma, "population_size" => population_size)
 
         # Initialize Optimizers
         # Optimizer1: Deap CMA-ES optimizer implemented in Python using PyCall
         # Optimizer2: Identical CMA-ES test optimizer implemented in Julia
-        optimizer1, eigenvectors1, indx1 = inititalize_optimizer(free_parameters, optimizer_configuration)
+        optimizer1, eigenvectors1, indx1 = OptimizerCmaEsDeap(free_parameters, optimizer_configuration)
         optimizer2 = OptimizerCmaEsTest(free_parameters, optimizer_configuration, eigenvectors1, indx1)
 
         # Compare internal states of both optimizers
