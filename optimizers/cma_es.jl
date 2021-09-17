@@ -35,7 +35,7 @@ mutable struct OptimizerCmaEs
     BD::Any
     genomes::Any
 
-    function OptimizerCmaEs(individual_size::Int, optimizer_configuration::Dict; test = false)
+    function OptimizerCmaEs(individual_size::Int, optimizer_configuration::Dict; test = false, eigenvectors1 = Nothing, indx1 = Nothing)
 
         config = OptimizerCmaEsCfg(optimizer_configuration)
 
@@ -56,9 +56,15 @@ mutable struct OptimizerCmaEs
         indx = sortperm(diagD)
 
         if test == true
-            eigenvectors = copy(B)
+            eigenvectors_test = copy(B)
+            B = copy(eigenvectors1)
+            indx_test = copy(indx)
+            indx = copy(indx1)
+            diagD_test = copy(diagD)
         else
-            eigenvectors = Nothing
+            eigenvectors_test = Nothing
+            indx_test = Nothing
+            diagD_test = Nothing
         end
 
         diagD = diagD[indx] .^ 0.5
@@ -84,20 +90,28 @@ mutable struct OptimizerCmaEs
 
         optimizer = new(lambda_, dim, chiN, mu, weights, mueff, cc, cs, ps, pc, centroid, update_count, ccov1, ccovmu, C, config.sigma, damps, diagD, B, BD, genomes)
 
-        return optimizer, eigenvectors, indx
+        return optimizer, eigenvectors_test, indx_test, diagD_test
     end
 end
 
-function ask(optimizer::OptimizerCmaEs)
+function ask(optimizer::OptimizerCmaEs; test = false, randoms1 = Nothing)
 
-    arz = rand(Normal(), size(optimizer.genomes))
-    optimizer.genomes = optimizer.centroid' .+ (optimizer.sigma .* (arz * optimizer.BD'))
+    randoms = rand(Normal(), size(optimizer.genomes))
 
-    return optimizer.genomes, arz
+    if test == true
+        randoms_test = copy(randoms)
+        randoms = copy(randoms1)
+    else
+        randoms_test = Nothing
+    end
+
+    optimizer.genomes = optimizer.centroid' .+ (optimizer.sigma .* (randoms * optimizer.BD'))
+
+    return optimizer.genomes, randoms_test
 
 end
 
-function tell(optimizer::OptimizerCmaEs, rewards_training; test = false)
+function tell(optimizer::OptimizerCmaEs, rewards_training; test = false, eigenvectors1 = Nothing, indx1 = Nothing)
 
     genomes_sorted = optimizer.genomes[sortperm(rewards_training, rev = true), :]
 
@@ -148,15 +162,21 @@ function tell(optimizer::OptimizerCmaEs, rewards_training; test = false)
     indx = sortperm(optimizer.diagD)
 
     if test == true
-        eigenvectors = copy(optimizer.B)
+        eigenvectors_test = copy(optimizer.B)
+        optimizer.B = copy(eigenvectors1)
+        indx_test = copy(indx)
+        indx = copy(indx1)
+        diagD_test = copy(optimizer.diagD)
     else
-        eigenvectors = Nothing
+        eigenvectors_test = Nothing
+        indx_test = Nothing
+        diagD_test = Nothing
     end
 
     optimizer.diagD = optimizer.diagD[indx] .^ 0.5
     optimizer.B = optimizer.B[:, indx]
     optimizer.BD = optimizer.B .* optimizer.diagD'
 
-    return eigenvectors, indx
+    return eigenvectors_test, indx_test, diagD_test
 
 end
