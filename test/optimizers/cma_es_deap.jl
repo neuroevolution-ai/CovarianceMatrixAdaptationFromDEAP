@@ -26,7 +26,7 @@ mutable struct OptimizerCmaEsDeap
     BD::Any
     genomes::Any
 
-    function OptimizerCmaEsDeap(individual_size::Int, configuration::Dict)
+    function OptimizerCmaEsDeap(individual_size::Int, configuration::Dict; test = false)
         scriptdir = @__DIR__
         pushfirst!(PyVector(pyimport("sys")."path"), scriptdir)
         optimizer_deap = pyimport("cma_es_deap")
@@ -76,7 +76,7 @@ function ask(optimizer)
     return optimizer.genomes, strategy.randoms
 end
 
-function tell(optimizer, rewards)
+function tell(optimizer, rewards; test = false)
 
     strategy = optimizer.opt.tell(rewards)
 
