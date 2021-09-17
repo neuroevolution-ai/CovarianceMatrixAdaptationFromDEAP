@@ -3,16 +3,16 @@ using CUDA
 using Distributions
 using Random
 
-struct OptimizerCmaEsTestCfg
+struct OptimizerCmaEsCfg
     population_size::Int
     sigma::Float64
 
-    function OptimizerCmaEsTestCfg(configuration::Dict)
+    function OptimizerCmaEsCfg(configuration::Dict)
         new(configuration["population_size"], configuration["sigma"]) 
     end
 end
 
-mutable struct OptimizerCmaEsTest
+mutable struct OptimizerCmaEs
     lambda_::Any
     dim::Any
     chiN::Any
@@ -35,9 +35,9 @@ mutable struct OptimizerCmaEsTest
     BD::Any
     genomes::Any
 
-    function OptimizerCmaEsTest(individual_size, optimizer_configuration, eigenvectors1, indx1)
+    function OptimizerCmaEs(individual_size, optimizer_configuration, eigenvectors1, indx1)
 
-        config = OptimizerCmaEsTestCfg(optimizer_configuration)
+        config = OptimizerCmaEsCfg(optimizer_configuration)
 
         centroid = zeros(individual_size)
 
@@ -87,7 +87,7 @@ mutable struct OptimizerCmaEsTest
     end
 end
 
-function ask(optimizer::OptimizerCmaEsTest, randoms)
+function ask(optimizer::OptimizerCmaEs, randoms)
 
     arz = rand(Normal(), size(optimizer.genomes))
 
@@ -103,7 +103,7 @@ function ask(optimizer::OptimizerCmaEsTest, randoms)
 
 end
 
-function tell(optimizer::OptimizerCmaEsTest, rewards_training, eigenvectors1, indx1)
+function tell(optimizer::OptimizerCmaEs, rewards_training, eigenvectors1, indx1)
 
     genomes_sorted = optimizer.genomes[sortperm(rewards_training, rev = true), :]
 

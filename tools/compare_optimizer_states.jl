@@ -1,6 +1,6 @@
 using Test
 
-function compare_optimizer_states(optimizer1::OptimizerCmaEsDeap, optimizer2::OptimizerCmaEs, tolerance)
+function compare_optimizer_states(optimizer1::OptimizerCmaEsDeap, optimizer2::OptimizerCmaEsTest, tolerance)
 
     @test optimizer1.lambda_ ≈ optimizer2.lambda_ atol = tolerance
     @test optimizer1.dim ≈ optimizer2.dim atol = tolerance
