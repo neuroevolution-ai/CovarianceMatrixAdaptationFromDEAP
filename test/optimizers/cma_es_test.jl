@@ -57,10 +57,10 @@ mutable struct OptimizerCmaEsTest
 
         # These lines are only to enable testing, since eigenvectors are not deterministic
         @test size(indx) == size(indx1)
-        @test diagD[indx] ≈ diagD[indx1.+1] atol = 0.00001
+        @test diagD[indx] ≈ diagD[indx1] atol = 0.00001
         @test size(B) == size(eigenvectors1)
         B = copy(eigenvectors1)
-        indx = copy(indx1 .+ 1)
+        indx = copy(indx1)
 
         diagD = diagD[indx] .^ 0.5
         B = B[:, indx]
@@ -157,10 +157,10 @@ function tell(optimizer::OptimizerCmaEsTest, rewards_training, eigenvectors1, in
 
     # These lines are only to enable testing, since eigenvectors are not deterministic
     @test size(indx) == size(indx1)
-    @test optimizer.diagD[indx] ≈ optimizer.diagD[indx1.+1] atol = 0.00001
+    @test optimizer.diagD[indx] ≈ optimizer.diagD[indx1] atol = 0.00001
     @test size(optimizer.B) == size(eigenvectors1)
     optimizer.B = copy(eigenvectors1)
-    indx = copy(indx1 .+ 1)
+    indx = copy(indx1)
 
     optimizer.diagD = optimizer.diagD[indx] .^ 0.5
     optimizer.B = optimizer.B[:, indx]

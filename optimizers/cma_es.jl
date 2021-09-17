@@ -8,7 +8,7 @@ struct OptimizerCmaEsCfg
     sigma::Float64
 
     function OptimizerCmaEsCfg(configuration::Dict)
-        new(configuration["population_size"], configuration["sigma"]) 
+        new(configuration["population_size"], configuration["sigma"])
     end
 end
 
@@ -35,7 +35,7 @@ mutable struct OptimizerCmaEs
     BD::Any
     genomes::Any
 
-    function OptimizerCmaEs(individual_size, optimizer_configuration, eigenvectors1, indx1)
+    function OptimizerCmaEs(individual_size::Int, optimizer_configuration::Dict; test = false)
 
         config = OptimizerCmaEsCfg(optimizer_configuration)
 
@@ -55,12 +55,9 @@ mutable struct OptimizerCmaEs
 
         indx = sortperm(diagD)
 
-        # These lines are only to enable testing, since eigenvectors are not deterministic
-        @test size(indx) == size(indx1)
-        @test diagD[indx] ≈ diagD[indx1.+1] atol = 0.00001
-        @test size(B) == size(eigenvectors1)
-        B = copy(eigenvectors1)
-        indx = copy(indx1 .+ 1)
+        if test == true
+            eigenvectors = copy(B)
+        end
 
         diagD = diagD[indx] .^ 0.5
         B = B[:, indx]
@@ -83,27 +80,20 @@ mutable struct OptimizerCmaEs
 
         genomes = zeros(lambda_, individual_size)
 
-        new(lambda_, dim, chiN, mu, weights, mueff, cc, cs, ps, pc, centroid, update_count, ccov1, ccovmu, C, config.sigma, damps, diagD, B, BD, genomes)
+        return new(lambda_, dim, chiN, mu, weights, mueff, cc, cs, ps, pc, centroid, update_count, ccov1, ccovmu, C, config.sigma, damps, diagD, B, BD, genomes), eigenvectors, indx
     end
 end
 
-function ask(optimizer::OptimizerCmaEs, randoms)
+function ask(optimizer::OptimizerCmaEs)
 
     arz = rand(Normal(), size(optimizer.genomes))
-
-    # These lines are only to enable testing to deal with random
-    @test size(arz) == size(randoms)
-    @test mean(arz) ≈ mean(randoms) atol = 0.1
-    @test std(arz) ≈ std(randoms) atol = 0.01
-    arz = copy(randoms)
-
     optimizer.genomes = optimizer.centroid' .+ (optimizer.sigma .* (arz * optimizer.BD'))
 
-    return optimizer.genomes
+    return optimizer.genomes, arz
 
 end
 
-function tell(optimizer::OptimizerCmaEs, rewards_training, eigenvectors1, indx1)
+function tell(optimizer::OptimizerCmaEs, rewards_training; test = false)
 
     genomes_sorted = optimizer.genomes[sortperm(rewards_training, rev = true), :]
 
@@ -146,8 +136,6 @@ function tell(optimizer::OptimizerCmaEs, rewards_training, eigenvectors1, indx1)
     optimizer.sigma *=
         exp((norm(optimizer.ps) / optimizer.chiN - 1) * optimizer.cs / optimizer.damps)
 
-    @test Hermitian(optimizer.C) ≈ optimizer.C atol = 0.00001
-
     C_GPU = CuArray(optimizer.C)
     val_GPU, vec_GPU = CUDA.CUSOLVER.syevd!('V', 'U', C_GPU)
     optimizer.diagD = Array(val_GPU)
@@ -155,15 +143,14 @@ function tell(optimizer::OptimizerCmaEs, rewards_training, eigenvectors1, indx1)
 
     indx = sortperm(optimizer.diagD)
 
-    # These lines are only to enable testing, since eigenvectors are not deterministic
-    @test size(indx) == size(indx1)
-    @test optimizer.diagD[indx] ≈ optimizer.diagD[indx1.+1] atol = 0.00001
-    @test size(optimizer.B) == size(eigenvectors1)
-    optimizer.B = copy(eigenvectors1)
-    indx = copy(indx1 .+ 1)
+    if test == true
+        eigenvectors = copy(optimizer.B)
+    end
 
     optimizer.diagD = optimizer.diagD[indx] .^ 0.5
     optimizer.B = optimizer.B[:, indx]
     optimizer.BD = optimizer.B .* optimizer.diagD'
+
+    return eigenvectors, indx
 
 end

@@ -60,7 +60,7 @@ function inititalize_optimizer(individual_size, configuration)
         
     )
 
-    return optimizer, opt.strategy.eigenvectors, opt.strategy.indx
+    return optimizer, opt.strategy.eigenvectors, opt.strategy.indx .+ 1
 end
 
 function ask(optimizer)
@@ -91,6 +91,6 @@ function tell(optimizer, rewards)
     optimizer.B = strategy.B
     optimizer.BD = strategy.BD
 
-    return strategy.eigenvectors, strategy.indx
-   
+    return strategy.eigenvectors, strategy.indx .+ 1
+
 end
