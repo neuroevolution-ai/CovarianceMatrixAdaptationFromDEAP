@@ -12,13 +12,11 @@ free_parameters = 1000
 
 tolerance = 0.00001
 
-# OptimizerCmaEs: CMA-ES optimizer implemented in Julia that we use in our framework
-# OptimizerCmaEsDeap: Original Deap CMA-ES optimizer implemented in Python using PyCall
-optimizers_for_comparison = [OptimizerCmaEs, OptimizerCmaEsDeap]
-
 @testset "Optimizers" begin
 
-    for optimizer_for_comparison in optimizers_for_comparison
+    # OptimizerCmaEs: CMA-ES optimizer implemented in Julia that we use in our framework
+    # OptimizerCmaEsDeap: Original Deap CMA-ES optimizer implemented in Python using PyCall
+    for optimizer_for_comparison in [OptimizerCmaEs, OptimizerCmaEsDeap]
 
         # Initialize Optimizers
         # OptimizerCmaEsTest: Identical CMA-ES test optimizer implemented in Julia

@@ -82,7 +82,9 @@ mutable struct OptimizerCmaEs
 
         genomes = zeros(lambda_, individual_size)
 
-        return new(lambda_, dim, chiN, mu, weights, mueff, cc, cs, ps, pc, centroid, update_count, ccov1, ccovmu, C, config.sigma, damps, diagD, B, BD, genomes), eigenvectors, indx
+        optimizer = new(lambda_, dim, chiN, mu, weights, mueff, cc, cs, ps, pc, centroid, update_count, ccov1, ccovmu, C, config.sigma, damps, diagD, B, BD, genomes)
+
+        return optimizer, eigenvectors, indx
     end
 end
 
